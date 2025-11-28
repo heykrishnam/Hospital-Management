@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<h2 class="mb-4">Search</h2>
+<form class="row g-3 mb-4">
+  <div class="col-md-5">
+    <input type="text" class="form-control" name="q" placeholder="Search term" value="{{ query }}" />
+  </div>
+  <div class="col-md-3">
+    <select class="form-select" name="scope">
+      <option value="doctor" {% if scope == 'doctor' %}selected{% endif %}>Doctor</option>
+      <option value="patient" {% if scope == 'patient' %}selected{% endif %}>Patient</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-primary w-100" type="submit">Search</button>
+  </div>
+</form>
+
+{% if scope == 'doctor' %}
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Doctor Results</h5>
+      <ul class="list-group">
+        {% for doctor in doctors %}
+          <li class="list-group-item">
+            <strong>{{ doctor['full_name'] }}</strong>
+            <span class="text-muted"> - {{ doctor['specialization'] }}</span>
+            <div>{{ doctor['department_name'] }}</div>
+          </li>
+        {% else %}
+          <li class="list-group-item text-center">No doctors found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% else %}
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Patient Results</h5>
+      <ul class="list-group">
+        {% for patient in patients %}
+          <li class="list-group-item">
+            <strong>{{ patient['full_name'] }}</strong>
+            <div>Contact: {{ patient['contact'] or '-' }}</div>
+            <div>ID: {{ patient['id'] }}</div>
+          </li>
+        {% else %}
+          <li class="list-group-item text-center">No patients found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}
+

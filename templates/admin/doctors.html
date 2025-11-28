@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Manage Doctors{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Doctors</h2>
+  <div>
+    <a class="btn btn-primary" href="{{ url_for('admin.add_doctor') }}">Add Doctor</a>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Specialization</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for doctor in doctors %}
+                <tr>
+                  <td>{{ doctor['full_name'] }}</td>
+                  <td>{{ doctor['department_name'] or '-' }}</td>
+                  <td>{{ doctor['specialization'] }}</td>
+                  <td>
+                    {% if doctor['is_blacklisted'] %}
+                      <span class="badge text-bg-danger">Blacklisted</span>
+                    {% else %}
+                      <span class="badge text-bg-success">Active</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.edit_doctor', doctor_id=doctor['id']) }}">Edit</a>
+                    <form method="post" action="{{ url_for('admin.delete_doctor', doctor_id=doctor['id']) }}" class="d-inline">
+                      <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete doctor?')">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              {% else %}
+                <tr>
+                  <td colspan="5" class="text-center">No doctors yet.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card mb-4">
+      <div class="card-header">Departments</div>
+      <div class="card-body">
+        <ul class="list-group mb-3">
+          {% for dept in departments %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ dept['name'] }}
+              <span class="text-muted small">{{ dept['description'] }}</span>
+            </li>
+          {% else %}
+            <li class="list-group-item text-center">No departments.</li>
+          {% endfor %}
+        </ul>
+        <form method="post">
+          <div class="mb-2">
+            <label class="form-label">Department name</label>
+            <input type="text" class="form-control" name="dept_name" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="dept_desc" rows="2"></textarea>
+          </div>
+          <button class="btn btn-outline-primary w-100">Save Department</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

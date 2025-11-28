@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Book Appointment{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h3>{{ doctor['full_name'] }}</h3>
+        <p class="text-muted">{{ doctor['specialization'] }}</p>
+        <p>Email: {{ doctor['email'] }}</p>
+      </div>
+    </div>
+    <div class="card mt-3">
+      <div class="card-header">Availability</div>
+      <div class="card-body">
+        <ul class="list-group">
+          {% for day, slots in availability.items() %}
+            <li class="list-group-item">
+              <strong>{{ day }}</strong>
+              <div>{{ slots|join(', ') }}</div>
+            </li>
+          {% else %}
+            <li class="list-group-item text-center">Doctor has not published availability.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <h4>Book / Reschedule</h4>
+        {% if pending_choice %}
+          <div class="alert alert-warning">
+            Slot is not available. {{ pending_choice.reason }}
+            <div class="mt-2">
+              <form method="post">
+                <input type="hidden" name="date" value="{{ pending_choice.date }}" />
+                <input type="hidden" name="time" value="{{ pending_choice.time }}" />
+                <input type="hidden" name="appointment_id" value="{{ pending_choice.appointment_id }}" />
+                <input type="hidden" name="confirm_pending" value="yes" />
+                <button class="btn btn-warning w-100">Request Doctor Approval</button>
+              </form>
+            </div>
+          </div>
+        {% endif %}
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" name="date" value="{{ selected_date or '' }}" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Time</label>
+            <input type="time" class="form-control" name="time" value="{{ selected_time or '' }}" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Existing Appointment ID (optional)</label>
+            <input type="number" class="form-control" name="appointment_id" placeholder="Enter to reschedule" />
+          </div>
+          <button class="btn btn-primary w-100">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

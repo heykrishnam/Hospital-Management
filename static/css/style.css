@@ -1,0 +1,27 @@
+body {
+  background-color: #f7f9fc;
+}
+
+.stat-card {
+  border: none;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
+  color: #fff;
+}
+
+.stat-card h6 {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.stat-card h2 {
+  font-weight: 700;
+}
+
+.card {
+  border-radius: 0.75rem;
+  border: none;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+

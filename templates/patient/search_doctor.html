@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Search Doctors{% endblock %}
+{% block content %}
+<h2 class="mb-4">Search Doctors</h2>
+<form class="row g-3 mb-4">
+  <div class="col-md-6">
+    <input
+      type="text"
+      class="form-control"
+      name="specialization"
+      placeholder="Search by specialization or department"
+      value="{{ specialization }}"
+    />
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-primary w-100">Search</button>
+  </div>
+</form>
+
+<div class="row g-4">
+  {% for doctor in doctors %}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5>{{ doctor['full_name'] }}</h5>
+          <p class="mb-1 text-muted">{{ doctor['specialization'] }}</p>
+          <p class="small text-muted">{{ doctor['department_name'] or 'N/A' }}</p>
+          <a class="btn btn-outline-primary btn-sm" href="{{ url_for('patient.book', doctor_id=doctor['id']) }}">
+            View availability
+          </a>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <p class="text-center">No doctors found.</p>
+  {% endfor %}
+</div>
+{% endblock %}
+

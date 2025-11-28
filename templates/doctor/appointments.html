@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Doctor Appointments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Appointments</h2>
+  <form class="d-flex gap-2">
+    <select class="form-select" name="status">
+      <option value="">All Statuses</option>
+      {% for status in ['PendingApproval','Booked', 'Completed', 'Cancelled'] %}
+        <option value="{{ status }}" {% if request.args.get('status') == status %}selected{% endif %}>
+          {{ status }}
+        </option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-outline-primary">Filter</button>
+  </form>
+</div>
+<div class="card">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Patient</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appointment in appointments %}
+            <tr>
+              <td>{{ appointment['date'] }}</td>
+              <td>{{ appointment['time'] }}</td>
+              <td>
+                {{ appointment['patient_name'] }}<br />
+                <a href="{{ url_for('doctor.patient_history', patient_id=appointment['patient_id']) }}">History</a>
+              </td>
+              <td>
+                <span class="badge text-bg-secondary">{{ appointment['status'] }}</span>
+              </td>
+              <td>
+                {% if appointment['status'] == 'PendingApproval' %}
+                  <form
+                    method="post"
+                    action="{{ url_for('doctor.approve_pending', appointment_id=appointment['id']) }}"
+                    class="d-inline"
+                  >
+                    <button class="btn btn-sm btn-success">Approve</button>
+                  </form>
+                  <form
+                    method="post"
+                    action="{{ url_for('doctor.reject_pending', appointment_id=appointment['id']) }}"
+                    class="d-inline"
+                  >
+                    <button class="btn btn-sm btn-outline-danger">Reject</button>
+                  </form>
+                {% elif appointment['status'] != 'Cancelled' %}
+                  <form
+                    method="post"
+                    action="{{ url_for('doctor.mark_complete', appointment_id=appointment['id']) }}"
+                    class="d-inline"
+                  >
+                    <button class="btn btn-sm btn-outline-success">Complete</button>
+                  </form>
+                {% endif %}
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('doctor.update_treatment', appointment_id=appointment['id']) }}">
+                  Treatment
+                </a>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="5" class="text-center">No appointments found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
